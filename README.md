@@ -56,3 +56,7 @@ Download all the contents of the repository and place them in a **single project
   ./LinearSystemSolver
 
 Note: You may need to create a main.cpp file to test the functionality using the classes from both parts.
+
+## 📄 Project Report
+
+For further details about this project, access file name: "tinyProjectReport.pdf".
