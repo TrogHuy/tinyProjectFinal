@@ -1,0 +1,85 @@
+# depslib dependency file v1.0
+1749224525 source:c:\users\admin\documents\tinyproject\linearsystem.cpp
+	"LinearSystem.h"
+	<cassert>
+	<cmath>
+
+1749223054 c:\users\admin\documents\tinyproject\linearsystem.h
+	"Vector.h"
+	"Matrix.h"
+	<cassert>
+
+1749280813 c:\users\admin\documents\tinyproject\vector.h
+
+1749112193 c:\users\admin\documents\tinyproject\matrix.h
+	"Vector.h"
+
+1749286488 source:c:\users\admin\documents\tinyproject\main.cpp
+	<iostream>
+	"Matrix.h"
+	"Vector.h"
+	"LinearSystem.h"
+	"NonSquareSystem.h"
+	"DataLoader.h"
+	"Evaluator.h"
+
+1749284617 source:c:\users\admin\documents\tinyproject\matrix.cpp
+	"Matrix.h"
+	"Vector.h"
+	<cassert>
+	<algorithm>
+	<iostream>
+
+1749280963 source:c:\users\admin\documents\tinyproject\vector.cpp
+	"Vector.h"
+	<cassert>
+	<iostream>
+
+1749222900 source:c:\users\admin\documents\tinyproject\generallinearsystem.cpp
+	"GeneralLinearSystem.h"
+	<cassert>
+	<cmath>
+
+1749221330 c:\users\admin\documents\tinyproject\generallinearsystem.h
+	"LinearSystem.h"
+	"Matrix.h"
+	"Vector.h"
+	<cassert>
+
+1749224490 source:c:\users\admin\documents\tinyproject\nonsquaresystem.cpp
+	"NONSQUARESYSTEM.h"
+	<cassert>
+	<cmath>
+
+1749224485 c:\users\admin\documents\tinyproject\nonsquaresystem.h
+	"LinearSystem.h"
+	"Matrix.h"
+	"Vector.h"
+	<cassert>
+
+1749279644 source:c:\users\admin\documents\tinyproject\dataloader.cpp
+	"DataLoader.h"
+	<fstream>
+	<sstream>
+	<vector>
+	<cassert>
+
+1749279649 c:\users\admin\documents\tinyproject\dataloader.h
+	"Matrix.h"
+	"Vector.h"
+	<string>
+
+1749283551 c:\users\admin\documents\tinyproject\evaluator.h
+	"Matrix.h"
+	"Vector.h"
+	<iostream>
+
+1749286879 source:c:\users\admin\documents\tinyproject\evaluator.cpp
+	"Evaluator.h"
+	<cmath>
+	<cstdlib>
+	<ctime>
+	<vector>
+	<algorithm>
+	<cassert>
+
