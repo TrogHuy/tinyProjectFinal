@@ -71,9 +71,14 @@ int main() {
 
     NonSquareSystem model(&trainE, &traine);
     Vector coeff = model.Solve();
-    Vector predicted = testE * coeff;
-    double rmse = computeRMSE(predicted, teste);
-    cout << "\nRMSE on test set: " << rmse << endl;
-
+    // Predict on training set
+    Vector trainPredicted = trainE * coeff;
+    double trainRMSE = computeRMSE(trainPredicted, traine);
+    cout << "\nRMSE on training set: " << trainRMSE << endl;
+    
+    // Predict on test set
+    Vector testPredicted = testE * coeff;
+    double testRMSE = computeRMSE(testPredicted, teste);
+    cout << "RMSE on test set: " << testRMSE << endl;
     return 0;
 }
