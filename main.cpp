@@ -7,34 +7,6 @@
 #include "Evaluator.h"
 using namespace std;
 
-void removeOutlierse(Matrix &A, Vector &b, double max_threshold=400) {
-    int rows = A.getNumRows();
-    int cols = A.getNumCols();
-
-    int validCount = 0;
-    for (int i = 0; i < b.size(); ++i) {
-        if (b[i] <= max_threshold) {
-            validCount++;
-        }
-    }
-
-    Matrix filteredA(validCount, cols);
-    Vector filteredb(validCount);
-
-    int newRow = 1;  // 1-based indexing for Matrix
-    for (int i = 0; i < b.size(); ++i) {
-        if (b[i] <= max_threshold) {
-            filteredb[newRow - 1] = b[i];
-            for (int j = 1; j <= cols; ++j) {
-                filteredA(newRow, j) = A(i + 1, j);
-            }
-            newRow++;
-        }
-    }
-    A = filteredA;
-    b = filteredb;
-}
-
 int main() {
     // ----------------- Test Matrix and Vector -----------------
     cout << "Testing Vector and Matrix classes:\n";
@@ -91,7 +63,6 @@ int main() {
     Matrix E;
     Vector e;
     LoadDataFromFile("machine.data", E, e);
-    removeOutlierse(E, e);
 
     Matrix trainE, testE;
     Vector traine, teste;
@@ -100,15 +71,32 @@ int main() {
     NonSquareSystem model(&trainE, &traine);
     Vector coeff = model.Solve();
 
+    cout << "-----------------------Before Removing Outlierse-------------------------\n";
     // Predict on training set
-    Vector trainPredicted = trainE * coeff;
-    double trainRMSE = computeRMSE(trainPredicted, traine);
-    cout << "\nRMSE on training set: " << trainRMSE << endl;
+    Vector trainPredicted_before = trainE * coeff;
+    double trainRMSE_before = computeRMSE(trainPredicted_before, traine);
+    cout << "\nRMSE on training set before removing outlierse: " << trainRMSE_before << endl;
 
     // Predict on test set
-    Vector testPredicted = testE * coeff;
-    double testRMSE = computeRMSE(testPredicted, teste);
-    cout << "RMSE on test set: " << testRMSE << endl;
+    Vector testPredicted_before = testE * coeff;
+    double testRMSE_before = computeRMSE(testPredicted_before, teste);
+    cout << "RMSE on test set before removing outlierse: " << testRMSE_before << endl;
+    cout << endl;
 
+    cout << "----------------------After Removing Outlierse---------------------------\n";
+
+    removeOutlierse(E, e);
+    SplitTrainTest(E, e, trainE, traine, testE, teste);
+
+    NonSquareSystem model_after(&trainE, &traine);
+    Vector coeff_after = model_after.Solve();
+
+    Vector trainPredicted_after = trainE * coeff_after;
+    double trainRMSE_after = computeRMSE(trainPredicted_after, traine);
+    cout << "\nRMSE on training set after removing outlierse: " << trainRMSE_after << endl;
+
+    Vector testPredicted_after = testE * coeff_after;
+    double testRMSE_after = computeRMSE(testPredicted_after, teste);
+    cout << "RMSE on test set after removing outlierse: " << testRMSE_after << endl;
     return 0;
 }
