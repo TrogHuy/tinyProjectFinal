@@ -59,4 +59,4 @@ Note: You may need to create a main.cpp file to test the functionality using the
 
 ## 📄 Project Report
 
-For further details about this project, access file name: "tinyProjectReport.pdf".
+For further details about this project, access file name: "report.pdf".
