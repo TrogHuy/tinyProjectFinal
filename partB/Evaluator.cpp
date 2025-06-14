@@ -70,3 +70,32 @@ double computeRMSE(const Vector& predicted, const Vector& actual) {
 
     return sqrt(sumSquaredError / predicted.size());
 }
+
+
+void removeOutlierse(Matrix &A, Vector &b, double max_threshold) {
+    int rows = A.getNumRows();
+    int cols = A.getNumCols();
+
+    int validCount = 0;
+    for (int i = 0; i < b.size(); ++i) {
+        if (b[i] <= max_threshold) {
+            validCount++;
+        }
+    }
+
+    Matrix filteredA(validCount, cols);
+    Vector filteredb(validCount);
+
+    int newRow = 1;  // 1-based indexing for Matrix
+    for (int i = 0; i < b.size(); ++i) {
+        if (b[i] <= max_threshold) {
+            filteredb[newRow - 1] = b[i];
+            for (int j = 1; j <= cols; ++j) {
+                filteredA(newRow, j) = A(i + 1, j);
+            }
+            newRow++;
+        }
+    }
+    A = filteredA;
+    b = filteredb;
+}
