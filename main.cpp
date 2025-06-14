@@ -5,8 +5,35 @@
 #include "NonSquareSystem.h"
 #include "DataLoader.h"
 #include "Evaluator.h"
-
 using namespace std;
+
+void removeOutlierse(Matrix &A, Vector &b, double max_threshold=400) {
+    int rows = A.getNumRows();
+    int cols = A.getNumCols();
+
+    int validCount = 0;
+    for (int i = 0; i < b.size(); ++i) {
+        if (b[i] <= max_threshold) {
+            validCount++;
+        }
+    }
+
+    Matrix filteredA(validCount, cols);
+    Vector filteredb(validCount);
+
+    int newRow = 1;  // 1-based indexing for Matrix
+    for (int i = 0; i < b.size(); ++i) {
+        if (b[i] <= max_threshold) {
+            filteredb[newRow - 1] = b[i];
+            for (int j = 1; j <= cols; ++j) {
+                filteredA(newRow, j) = A(i + 1, j);
+            }
+            newRow++;
+        }
+    }
+    A = filteredA;
+    b = filteredb;
+}
 
 int main() {
     // ----------------- Test Matrix and Vector -----------------
@@ -60,10 +87,11 @@ int main() {
     nx.print();
 
     // ----------------- Load UCI Dataset and Evaluate -----------------
-    cout << "\nLoading UCI CPU dataset and evaluating regression model:\n";
+    cout << "\nLoading UCI CPU dataset and evaluating linear regression model:\n";
     Matrix E;
     Vector e;
     LoadDataFromFile("machine.data", E, e);
+    removeOutlierse(E, e);
 
     Matrix trainE, testE;
     Vector traine, teste;
@@ -71,14 +99,16 @@ int main() {
 
     NonSquareSystem model(&trainE, &traine);
     Vector coeff = model.Solve();
+
     // Predict on training set
     Vector trainPredicted = trainE * coeff;
     double trainRMSE = computeRMSE(trainPredicted, traine);
     cout << "\nRMSE on training set: " << trainRMSE << endl;
-    
+
     // Predict on test set
     Vector testPredicted = testE * coeff;
     double testRMSE = computeRMSE(testPredicted, teste);
     cout << "RMSE on test set: " << testRMSE << endl;
+
     return 0;
 }
