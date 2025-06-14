@@ -11,4 +11,6 @@ void SplitTrainTest(const Matrix &A, const Vector &b, Matrix &trainA, Vector &tr
 
 double computeRMSE(const Vector &predicted, const Vector &actual);
 
+void removeOutlierse(Matrix &A, Vector &b, double max_threshold=400);
+
 #endif // EVALUATOR_H
