@@ -1,49 +1,62 @@
 #include "DataLoader.h"
 #include <fstream>
 #include <sstream>
-#include <vector>
-#include <cassert>
+#include <iostream>
 using namespace std;
 
-void LoadDataFromFile(const std::string& filename, Matrix& A, Vector& b) {
+void LoadDataFromFile(const string& filename, Matrix& A, Vector& b) {
     ifstream infile(filename);
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cerr << "Failed to open file: " << filename << endl;
+        return;
+    }
+
+    // First read: count rows
     string line;
-    vector<vector<double>> feature_rows;
-    vector<double> target_values;
+    int rowCount = 0;
+    while (getline(file, line)) {
+        if (!line.empty()) rowCount++;
+    }
+
+    int numFeatures = 6;
+    A = Matrix(rowCount, numFeatures);
+    b = Vector(rowCount);
+
+    // Second read: read values
+    file.clear(); // enable second read
+    file.seekg(0, ios::beg); // move back to beginning of file
+
+    int row = 1;
+    int index = 0;
 
     while (getline(infile, line)) {
+        if(line.empty()) continue;
+
         stringstream ss(line);
         string token;
-        vector<double> row;
+        int col = 0;
+        int value;
 
         // Skip vendor name and model name
         getline(ss, token, ',');  // vendor name
         getline(ss, token, ',');  // model name
 
-        // 6 features columns
-        for (int i = 0; i < 6; ++i) {
+        // Read 6 features
+        for (int j = 1; j <= numFeatures; ++j) {
             getline(ss, token, ',');
-            row.push_back(stod(token));
+            value = stoi(token);
+            A(row, j) = value;
         }
 
         // PRP
         getline(ss, token, ',');  // PRP
-        target_values.push_back(stod(token));
+        value = stoi(token);
+        b[index] = value;
 
-        // Add features to matrix row list
-        feature_rows.push_back(row);
+        row++;
+        index++;
     }
 
-    int numRows = feature_rows.size();
-    int numCols = 6;
-
-    A = Matrix(numRows, numCols);
-    b = Vector(numRows);
-
-    for (int i = 0; i < numRows; ++i) {
-        b[i] = target_values[i];
-        for (int j = 0; j < numCols; ++j) {
-            A(i + 1, j + 1) = feature_rows[i][j];
-        }
-    }
+    file.close();
 }
