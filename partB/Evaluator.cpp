@@ -1,27 +1,36 @@
 #include "Evaluator.h"
 #include <cmath>
-#include <cstdlib>
 #include <ctime>
-#include <vector>
-#include <algorithm>
 #include <cassert>
+
+void swap(int &a, int &b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}
+
+void shuffle(Vector &indices) {
+    srand(time(0));
+    for(int i = indices.size()-1; i > 0; i--) {
+        int j = rand() % (i+1);
+        swap(indices[i], indices[j]);
+    }
+}
 
 void SplitTrainTest(const Matrix& A, const Vector& b,
                     Matrix& trainA, Vector& trainb,
                     Matrix& testA, Vector& testb,
                     double trainRatio) {
-    int totalSamples = b.size();                   // Number of rows in A and size of b
-    int numFeatures = A.getNumCols();              // Number of columns in A
-
+    int totalSamples = b.size();
+    int numFeatures = A.getNumCols();
     int trainSize = static_cast<int>(totalSamples * trainRatio);
     int testSize = totalSamples - trainSize;
 
     // Shuffle indices
-    vector<int> indices(totalSamples);
+    Vector indices(totalSamples);
     for (int i = 0; i < totalSamples; ++i)
         indices[i] = i;
-    srand(time(0));
-    random_shuffle(indices.begin(), indices.end());
+    shuffle(indices);
 
     // Allocate memory
     trainA = Matrix(trainSize, numFeatures);
@@ -31,22 +40,21 @@ void SplitTrainTest(const Matrix& A, const Vector& b,
 
     // Fill training set
     for (int i = 0; i < trainSize; ++i) {
-        int idx = indices[i];  // 0-based index
-        trainb[i] = b[idx];  // Vector uses 0-based
+        int idx = static_cast<int>(indices[i]);
+        trainb[i] = b[idx];
 
         for (int j = 0; j < numFeatures; ++j) {
-            // Matrix uses 1-based indexing
             trainA(i + 1, j + 1) = A(idx + 1, j + 1);
         }
     }
 
     // Fill test set
     for (int i = 0; i < testSize; ++i) {
-        int idx = indices[trainSize + i];  // 0-based index
-        testb[i] = b[idx];  // Vector uses 0-based
+        int idx = static_cast<int>(indices[trainSize + i]);
+        testb[i] = b[idx];
 
         for (int j = 0; j < numFeatures; ++j) {
-            testA(i + 1, j + 1) = A(idx + 1, j + 1);  // Matrix uses 1-based
+            testA(i + 1, j + 1) = A(idx + 1, j + 1);
         }
     }
 }
